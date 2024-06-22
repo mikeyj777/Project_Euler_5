@@ -47,7 +47,7 @@ def primes_below(num, use_prime_array_for_large_numbers = True, prime_arr = []):
     return primes
 
 
-def is_prime(num):
+def is_prime(num, use_prime_array_for_large_numbers = True, prime_arr = []):
     
     if num < 2:
         return False
@@ -58,13 +58,18 @@ def is_prime(num):
     if num % 3 == 0:
         return False
 
-    arr = get_starting_matrix_for_prime_testing(num)
+    if len(prime_arr) == 0:
+        if use_prime_array_for_large_numbers:
+            prime_arr = get_primes_up_to_1e9()
+    
+    if len(prime_arr) == 0:
+        prime_arr = get_starting_matrix_for_prime_testing(num)
 
     max_prime_to_check = int(math.sqrt(num))
 
     i = 0
-    while arr[i] <= max_prime_to_check:
-        if num % arr[i] == 0:
+    while prime_arr[i] <= max_prime_to_check:
+        if num % prime_arr[i] == 0:
             return False
         i += 1
     
