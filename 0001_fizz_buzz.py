@@ -8,3 +8,5 @@ arr = np.arange(3, u_lim)
 arr = arr[((arr % 3 == 0) | (arr % 5 == 0))]
 
 print(arr.sum())
+
+# answer = 233168
