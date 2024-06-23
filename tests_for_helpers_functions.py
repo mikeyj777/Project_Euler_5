@@ -51,7 +51,7 @@ def test_prime_factorization_for_growing_numbers():
         
 
 def test_prime_factorization_for_random_numbers():
-    vals_to_test = np.random.randint(1e5, 1e6, 100, dtype=np.int64)
+    vals_to_test = np.random.randint(1e8, 1e9, 100, dtype=np.int64)
     t0 = dt.now()
     for val in vals_to_test:
         t1 = dt.now()
@@ -61,9 +61,15 @@ def test_prime_factorization_for_random_numbers():
         dt_2_0 = t2 - t0
         print(f'value: {val} | prime_dict: {p_facts} | time to get primes: {dt_2_1} | total runtime {dt_2_0}')
 
-test_prime_factorization_for_random_numbers()
+# stream_crossers = [439357, 992038, 872522]
 
-# p_facts = helpers.get_prime_factors_as_dict_with_values_as_count_of_each_factor(2*2*3*3*3*1190611)
+# test_prime_factorization_for_random_numbers()
+
+# p_facts = helpers.get_prime_factors_as_dict_with_values_as_count_of_each_factor(2*2*3*3*3*23*101*74207281)
 # print(p_facts)
 
 # print(helpers.get_prime_factors_as_dict_with_values_as_count_of_each_factor(600851475143))
+        
+ps = [25]
+for p in ps:
+    helpers.is_prime(p)
