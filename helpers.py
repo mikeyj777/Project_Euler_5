@@ -81,29 +81,28 @@ def is_prime(num, use_prime_array_for_large_numbers = True, prime_arr = []):
 
 def reduce_v_if_check_is_prime(v, check, prime_factors, composite_factors, large_array_of_primes = []):
 
-    check_is_prime = False
+    check_is_prime_factor = False
     if v % check == 0:
         if check in prime_factors:
-            check_is_prime = True
+            check_is_prime_factor = True
         
         if check not in prime_factors and check not in composite_factors:
             if len(large_array_of_primes) > 0:
                 if check in large_array_of_primes:
-                    check_is_prime = True
-                else:
-                    composite_factors[check] = None
+                    check_is_prime_factor = True
             else:
                 if is_prime(check):
-                    check_is_prime = True
-                else:
-                    composite_factors[check] = None
+                    check_is_prime_factor = True
     
-    if check_is_prime:
-        if check not in prime_factors:
-            prime_factors[check] = 0
-        while v % check == 0:
-            prime_factors[check] += 1
-            v /= check
+        if check_is_prime_factor:
+            if check not in prime_factors:
+                prime_factors[check] = 0
+            while v % check == 0:
+                prime_factors[check] += 1
+                v /= check
+        else:
+            if check not in composite_factors:
+                composite_factors[check] = 1
 
     return {
         'v': v,
@@ -111,9 +110,11 @@ def reduce_v_if_check_is_prime(v, check, prime_factors, composite_factors, large
         'composite_factors': composite_factors,
     }
 
-def get_prime_factors_as_dict_with_values_as_count_of_each_factor(v, prime_factors = {}, composite_factors = {}, large_array_of_primes = []):
+def get_prime_factors_as_dict_with_values_as_count_of_each_factor(v):
 
-    k = 1
+    prime_factors = {}
+    composite_factors = {}
+    large_array_of_primes = []
 
     low_primes = [2, 3]
     for p in low_primes:
@@ -121,30 +122,28 @@ def get_prime_factors_as_dict_with_values_as_count_of_each_factor(v, prime_facto
         v = resp_dict['v']
         prime_factors = resp_dict['prime_factors']
         composite_factors = resp_dict['composite_factors']
-        
+
+    k = 1
+
     upper_check = 6 * k + 1
     lower_check = 6 * k - 1
     while lower_check <= v:
         if k > 10000 and len(large_array_of_primes) == 0:
             large_array_of_primes = get_primes_up_to_1e9()
         resp_dict = reduce_v_if_check_is_prime(v, lower_check, prime_factors, composite_factors, large_array_of_primes)
-        v_new = resp_dict['v']
+        v = resp_dict['v']
         prime_factors = resp_dict['prime_factors']
         composite_factors = resp_dict['composite_factors']
-        if upper_check > v_new:
+        if upper_check > v:
             break
         
         # probably don't ever have to check upper if lower was a divisor.  however, leaving both in for now.
         # can optimize later if needed.
-        resp_dict = reduce_v_if_check_is_prime(v_new, upper_check, prime_factors, composite_factors, large_array_of_primes)
-        v_new = resp_dict['v']
+        resp_dict = reduce_v_if_check_is_prime(v, upper_check, prime_factors, composite_factors, large_array_of_primes)
+        v = resp_dict['v']
         prime_factors = resp_dict['prime_factors']
         composite_factors = resp_dict['composite_factors']
         
-        if v_new < v:
-            v = v_new
-            prime_factors = get_prime_factors_as_dict_with_values_as_count_of_each_factor(v, prime_factors, composite_factors, large_array_of_primes)
-
         k += 1
         upper_check = 6 * k + 1
         lower_check = 6 * k - 1
