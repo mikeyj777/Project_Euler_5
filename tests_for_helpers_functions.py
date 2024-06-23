@@ -72,7 +72,7 @@ def test_prime_factorization_for_values_along_6k_pm_1():
     for k in range(1,max_k + 1):
         l = 6*k-1
         u = 6*k+1
-
+        
         prime_factors[l] = helpers.get_prime_factors_as_dict_with_values_as_count_of_each_factor(l)
         ans.append([l, len(prime_factors[l])])
         # print(f'{l}: {prime_factors[l]}')
@@ -100,10 +100,13 @@ def test_prime_factorization_for_values_along_6k_pm_1():
     apple = 1
 
 # print(helpers.is_prime(999983))
-
+# print(helpers.is_prime(289224097))
 # test_prime_factorization_for_values_along_6k_pm_1()
-print(helpers.recursive_prime_factoring_to_dict(289224097))
-# print(helpers.get_prime_factors_as_dict_with_values_as_count_of_each_factor(72))
+# print(helpers.recursive_prime_factoring_to_dict(289224097))
+print(helpers.recursive_prime_factoring_to_dict(144))
+
+# print(helpers.recursive_prime_factoring_to_dict(978403))
+# print(helpers.get_prime_factors_as_dict_with_values_as_count_of_each_factor(289224097))
 # stream_crossers = [439357, 992038, 872522]
 
 # test_prime_factorization_for_random_numbers()
