@@ -4,59 +4,55 @@ import math
 import helpers
 import numpy as np
 
-prime_factors_dict = {}
+val = 600851475143
 
-def prime_factors(num):
+prime_factors = {}
+composite_factors = {}
 
-    global prime_factors_dict
+def reduce_v_if_check_is_prime(v, check):
+    global prime_factors, composite_factors
 
-    if num in prime_factors_dict:
-        if len(prime_factors_dict[num]) > 0:
-            if prime_factors_dict[num] == [num]:
-                return
-
-    if num not in prime_factors_dict:
-        prime_factors_dict[num] = []
-
-    if num < 2:
-        return
+    if v % check == 0:
+        if check not in prime_factors and check not in composite_factors:
+            if helpers.is_prime(check):
+                prime_factors[check] = None
+                v /= check
+            else:
+                composite_factors[check] = None
+            
     
-    if num % 2 == 0:
-        prime_factors_dict[num].append(2)
-    
-    if num % 3 == 0:
-        prime_factors_dict[num].append(3)
-    
-    max_test = int(math.sqrt(num))
+    return v
+
+def largest_prime_factor(v):
 
     k = 1
+
+    low_primes = [2, 3]
+    for p in low_primes:
+        v = reduce_v_if_check_is_prime(v, p)
+
     upper_check = 6 * k + 1
     lower_check = 6 * k - 1
-    while lower_check <= max_test:
+    while lower_check <= v:
+        v = reduce_v_if_check_is_prime(v, lower_check)
         
-        if lower_check in prime_factors_dict:
-            if prime_factors_dict[lower_check] == [lower_check]:
-                if max_test % lower_check == 0:
-                    prime_factors_dict[num].append(lower_check)
-        else:
-            prime_factors(lower_check)
-
-        if upper_check > max_test:
+        if upper_check > v:
             break
-
-        if upper_check in prime_factors_dict:
-            if prime_factors_dict[upper_check] == [upper_check]:
-                if max_test % upper_check == 0:
-                    prime_factors_dict[num].append(upper_check)
-        else:
-            prime_factors(upper_check)
-                
+        
+        # probably don't ever have to check upper if lower was a divisor.  however, leaving both in for now.
+        # can optimize later if needed.
+        v = reduce_v_if_check_is_prime(v, upper_check)
+        
         k += 1
         upper_check = 6 * k + 1
         lower_check = 6 * k - 1
-    
-    prime_factors_dict[num].append(num)
 
-val = 600851475143
 
-prime_factors(val)
+largest_prime_factor(val)
+
+max_factor = max(prime_factors.keys())
+
+print(f'larges prime factor: {max_factor}')
+
+apple = 1
+

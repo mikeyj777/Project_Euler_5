@@ -60,7 +60,8 @@ def is_prime(num, use_prime_array_for_large_numbers = True, prime_arr = []):
 
     if len(prime_arr) == 0:
         if use_prime_array_for_large_numbers:
-            prime_arr = get_primes_up_to_1e9()
+            if num > 1e7 and num < 1e9:
+                prime_arr = get_primes_up_to_1e9()
     
     if len(prime_arr) == 0:
         prime_arr = get_starting_matrix_for_prime_testing(num)
