@@ -195,17 +195,88 @@ def get_prime_factors_as_dict_with_values_as_count_of_each_factor(v):
     
     return prime_factors
 
-def recursive_prime_factoring_to_dict(v, prime_factors_of_each_number = {}, prime_factors = {}, composite_factors = {}, found_primes=[]):
-    if len(prime_factors_of_each_number) == 0:
-        prime_factors_of_each_number[2] = [2]
-        prime_factors_of_each_number[3] = [3]
+def recurse_checker(v, check, prime_factors_of_each_number):
+    v_orig = v
+    if check not in prime_factors_of_each_number:
+        prime_factors_of_each_number = recursive_prime_factoring_to_dict(check, prime_factors_of_each_number)
+    if check not in prime_factors_of_each_number[v_orig]:
+        if len(prime_factors_of_each_number[check]) == 1:
+            if v % check == 0:
+                count = 0
+                while v % check == 0:
+                    v /= check
+                    count += 1
+                if check not in prime_factors_of_each_number[v_orig]:
+                    prime_factors_of_each_number[v_orig][check] = 0
+                prime_factors_of_each_number[v_orig][check] += count
+            # will run if v is updated
+            if v >= 2:
+                if v not in prime_factors_of_each_number:
+                    prime_factors_of_each_number = recursive_prime_factoring_to_dict(v, prime_factors_of_each_number)
+        
+    return {
+        'v': v,
+        'prime_factors_of_each_number': prime_factors_of_each_number
+    }
+
+def recursive_prime_factoring_to_dict(v, prime_factors_of_each_number = {}):
+
+    if v in prime_factors_of_each_number:
+        return prime_factors_of_each_number
     
-    if v < 5:
-        return
+    prime_factors_of_each_number[v] = {}
+    if v < 100000:
+        if is_prime(v):
+            prime_factors_of_each_number[v] = {v: 1} 
+            return prime_factors_of_each_number
     
+    v_orig = v
+
+    for p in [2, 3]:
+        if v == 9:
+            apple = 1
+        resp_dict = recurse_checker(v = v, check= p, prime_factors_of_each_number=prime_factors_of_each_number)
+        v = resp_dict['v']
+        prime_factors_of_each_number = resp_dict['prime_factors_of_each_number']
+        if v == 1:
+            break
+        if v in prime_factors_of_each_number:
+            prime_factors_of_each_number[v_orig].update(prime_factors_of_each_number[v].copy())
+        
+        # prime_factors_of_each_number[v_orig].extend(prime_factors_of_each_number[v])
+    
+    if v < 2:
+        return prime_factors_of_each_number
+
     l = 1
-    l_l = 5 * l - 1
-    l_u = 5 * l + 1
+    l_l = 6 * l - 1
+    l_u = 6 * l + 1
 
-    while 
+    while l_l < v:
+        resp_dict = recurse_checker(v = v, check= l_l, prime_factors_of_each_number=prime_factors_of_each_number)
+        v = resp_dict['v']
+        prime_factors_of_each_number = resp_dict['prime_factors_of_each_number']
+        # prime_factors_of_each_number[v_orig].extend(prime_factors_of_each_number[v])
+        if v in prime_factors_of_each_number:
+            prime_factors_of_each_number[v_orig].update(prime_factors_of_each_number[v].copy())
 
+        if l_u > v:
+            break
+
+        resp_dict = recurse_checker(v = v, check= l_u, prime_factors_of_each_number=prime_factors_of_each_number)
+        v = resp_dict['v']
+        prime_factors_of_each_number = resp_dict['prime_factors_of_each_number']
+        if v in prime_factors_of_each_number:
+            prime_factors_of_each_number[v_orig].update(prime_factors_of_each_number[v].copy())
+        # prime_factors_of_each_number[v_orig].extend(prime_factors_of_each_number[v])
+
+        l += 1
+        l_l = 6 * l - 1
+        l_u = 6 * l + 1
+
+    if len(prime_factors_of_each_number[v_orig]) == 0:
+        if is_prime(v_orig):
+            prime_factors_of_each_number[v_orig] = {v_orig: 1}
+
+
+    return prime_factors_of_each_number

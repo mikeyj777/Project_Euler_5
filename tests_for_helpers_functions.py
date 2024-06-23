@@ -99,8 +99,11 @@ def test_prime_factorization_for_values_along_6k_pm_1():
 
     apple = 1
 
-test_prime_factorization_for_values_along_6k_pm_1()
+# print(helpers.is_prime(999983))
 
+# test_prime_factorization_for_values_along_6k_pm_1()
+print(helpers.recursive_prime_factoring_to_dict(289224097))
+# print(helpers.get_prime_factors_as_dict_with_values_as_count_of_each_factor(72))
 # stream_crossers = [439357, 992038, 872522]
 
 # test_prime_factorization_for_random_numbers()
