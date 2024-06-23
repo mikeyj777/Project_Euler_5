@@ -33,4 +33,32 @@ def prime_size_test(num, use_stored_array = False):
     dt2 = dt.now() - t1
     print(f'test {num} is prime: {prime_test_result}. duration: {dt2}')
 
-prime_size_test(74207281, use_stored_array=True)
+# prime_size_test(74207281, use_stored_array=True)
+
+def test_prime_factorization_for_growing_numbers():
+    t0 = dt.now()
+    primes = helpers.get_primes_up_to_1e9()
+    for i in range(1, 101):
+        t1 = dt.now()
+        val_to_test = np.prod(primes[:i])
+        t2 = dt.now()
+        dt2_1 = t2 - t1
+        p_facts = helpers.get_prime_factors_as_dict_with_values_as_count_of_each_factor(val_to_test)
+        t3 = dt.now()
+        dt_3_2 = t3 - t2
+        dt_3_0 = t3 - t0
+        print(f'value: {val_to_test} | prime_dict: {p_facts} | time to get value: {dt2_1} | time to get primes: {dt_3_2} | total runtime {dt_3_0}')
+        
+
+def test_prime_factorization_for_random_numbers():
+    vals_to_test = np.random.randint(1000, 1e15, 100, dtype=np.int64)
+    t0 = dt.now()
+    for val in vals_to_test:
+        t1 = dt.now()
+        p_facts = helpers.get_prime_factors_as_dict_with_values_as_count_of_each_factor(val)
+        t2 = dt.now()
+        dt_2_1 = t2 - t1
+        dt_2_0 = t2 - t0
+        print(f'value: {val} | prime_dict: {p_facts} | time to get primes: {dt_2_1} | total runtime {dt_2_0}')
+
+test_prime_factorization_for_random_numbers()
