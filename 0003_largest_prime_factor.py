@@ -57,3 +57,5 @@ def largest_prime_factor(v):
 # apple = 1
 
 print(helpers.get_prime_factors(val))
+
+# 6857
