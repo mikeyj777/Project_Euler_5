@@ -194,3 +194,18 @@ def get_prime_factors_as_dict_with_values_as_count_of_each_factor(v):
         lower_check = 6 * k - 1
     
     return prime_factors
+
+def recursive_prime_factoring_to_dict(v, prime_factors_of_each_number = {}, prime_factors = {}, composite_factors = {}, found_primes=[]):
+    if len(prime_factors_of_each_number) == 0:
+        prime_factors_of_each_number[2] = [2]
+        prime_factors_of_each_number[3] = [3]
+    
+    if v < 5:
+        return
+    
+    l = 1
+    l_l = 5 * l - 1
+    l_u = 5 * l + 1
+
+    while 
+

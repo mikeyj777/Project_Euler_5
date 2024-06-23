@@ -2,6 +2,7 @@ import helpers
 import pandas as pd
 import numpy as np
 
+from datetime import timedelta
 from datetime import datetime as dt
 
 t0 = dt.now()
@@ -61,6 +62,45 @@ def test_prime_factorization_for_random_numbers():
         dt_2_0 = t2 - t0
         print(f'value: {val} | prime_dict: {p_facts} | time to get primes: {dt_2_1} | total runtime {dt_2_0}')
 
+def test_prime_factorization_for_values_along_6k_pm_1():
+    prime_factors = {2: [2], 3: [3]}
+    ans = []
+    t0 = dt.now()
+    t0_1 = t0
+    max_k = 100000
+    checkstep_mod = int(max_k / 1000)
+    for k in range(1,max_k + 1):
+        l = 6*k-1
+        u = 6*k+1
+
+        prime_factors[l] = helpers.get_prime_factors_as_dict_with_values_as_count_of_each_factor(l)
+        ans.append([l, len(prime_factors[l])])
+        # print(f'{l}: {prime_factors[l]}')
+        
+        prime_factors[u] = helpers.get_prime_factors_as_dict_with_values_as_count_of_each_factor(u)
+        ans.append([u, len(prime_factors[u])])
+        # print(f'{u}: {prime_factors[u]}')
+
+        if k % checkstep_mod == 0:
+            t1 = dt.now()
+            dt1 = t1 - t0_1
+            dt1_sec = dt1.total_seconds()
+            dt1_0 = t1 - t0
+            dt1_0_sec = dt1_0.total_seconds()
+            rate = k / dt1_sec
+            time_remaining = (max_k - k) / rate
+            time_remaining_td = timedelta(seconds=time_remaining)
+            est_time_to_complete = dt.now() + time_remaining_td
+            print(f'{k} done | last seg dur {int(dt1_sec)} sec | {max_k - k} nums remaining | time left {int(time_remaining)} sec | tot dur {int(dt1_0_sec)} sec | etc {est_time_to_complete.strftime("%Y-%m-%d %H:%M:%S")}')
+            t0_1 = t1
+
+    
+    ans_df = pd.DataFrame(ans, columns = ['val', 'num_prime_factors'])
+
+    apple = 1
+
+test_prime_factorization_for_values_along_6k_pm_1()
+
 # stream_crossers = [439357, 992038, 872522]
 
 # test_prime_factorization_for_random_numbers()
@@ -69,7 +109,3 @@ def test_prime_factorization_for_random_numbers():
 # print(p_facts)
 
 # print(helpers.get_prime_factors_as_dict_with_values_as_count_of_each_factor(600851475143))
-        
-ps = [25]
-for p in ps:
-    helpers.is_prime(p)
