@@ -48,11 +48,12 @@ def largest_prime_factor(v):
         lower_check = 6 * k - 1
 
 
-largest_prime_factor(val)
+# largest_prime_factor(val)
 
-max_factor = max(prime_factors.keys())
+# max_factor = max(prime_factors.keys())
 
-print(f'larges prime factor: {max_factor}')
+# print(f'larges prime factor: {max_factor}')
 
-apple = 1
+# apple = 1
 
+print(helpers.get_prime_factors(val))
