@@ -1,3 +1,4 @@
+import math
 import helpers
 import pandas as pd
 import numpy as np
@@ -99,11 +100,108 @@ def test_prime_factorization_for_values_along_6k_pm_1():
 
     apple = 1
 
+def test_primes_up_to_n(num):
+    t_2_0 = dt.now()
+    t_2_1 = dt.now()
+    report_every_x_primes = 10
+    next_reporting_spot = report_every_x_primes
+    primes_below = num*math.log(num)
+    
+    x_0 = primes_below + 1
+    X = [x_0]
+    p_0 = helpers.get_nth_prime(x_0)
+    Y = [p_0]
+    if p_0 == num:
+        dt_2_2 = dt.now() - t_2_1
+        dt_2_2 = dt_2_2.total_seconds()
+        print(f'primes up to method took {dt_2_2} seconds')
+        return
+    x_1 = primes_below + 2
+    X.append(x_1)
+    p_1 = helpers.get_nth_prime(x_1)
+    Y.append(p_1)
+    dt_primes = 1
+    del_p_output = p_1 - p_0
+    x_2 = (x_0 * p_1 - x_1 * p_0) / del_p_output
+    X.append(x_2)
+    x_0 = x_1
+    x_1 = x_2
+    p = helpers.get_nth_prime(x_1)
+    Y.append(p)
+
+    n = 0
+    max_iter = 30
+    while p != num and n < max_iter:
+        n += 1
+        t_2_1 = dt.now()
+        p = helpers.get_nth_prime(x_2)
+        Y.append(p)
+        dt_2_2 = dt.now() - t_2_1
+        dt_2_2 = dt_2_2.total_seconds()
+        t_2_1 = dt.now()
+        dt_2_0 = t_2_1 - t0
+        dt_2_0 = dt_2_0.total_seconds()
+        if n >= next_reporting_spot:
+            print(f'{n} iters so far.  largest prime {p}.  run time {dt_2_0}')
+            next_reporting_spot += report_every_x_primes
+        del_p_output = p_1 - p_0
+        if del_p_output == 0:
+            break
+        x_2 = (x_0 * p_1 - x_1 * p_0) / del_p_output
+        X.append(x_2)
+        x_0 = x_1
+        x_1 = x_2
+    
+    
+    if p != num:
+        n = 0
+        while n < max_iter and p != num:
+            if len(Y) > len(X):
+                Y = Y[:len(X)]
+            fit = np.polyfit(Y, X, len(Y)-1)
+            x = np.polyval(fit, num)
+            X.append(x)
+            p = helpers.get_nth_prime(x)
+            Y.append(p)
+            n += 1
+            
+    test_time_2 = t_2_1 - t_2_0
+    test_time_2 = test_time_2.total_seconds()
+
+    out_str = 'found prime.  '
+    if p != num:
+        out_str = 'could not get apprpriate prime.  '
+        
+    print(f'{out_str} run time: {test_time_2}')
+
+
+
+
+def compare_nth_prime_method_to_test_in_is_prime():
+    num = 1000000007
+
+    t0 = dt.now()
+
+    test_1 = helpers.is_prime(num)
+
+    t1 = dt.now()
+
+    test_time_1 = t1 - t0
+    test_time_1 = test_time_1.total_seconds()
+
+    print(f'is_prime method completed in {test_time_1} sec')
+
+    test_primes_up_to_n(num)
+
+    
+
+compare_nth_prime_method_to_test_in_is_prime()
+
+# print(helpers.get_nth_prime(100))
 # print(helpers.is_prime(999983))
 # print(helpers.is_prime(289224097))
 # test_prime_factorization_for_values_along_6k_pm_1()
 # print(helpers.recursive_prime_factoring_to_dict(289224097))
-print(helpers.recursive_prime_factoring_to_dict(144))
 
 # print(helpers.recursive_prime_factoring_to_dict(978403))
 # print(helpers.get_prime_factors_as_dict_with_values_as_count_of_each_factor(289224097))

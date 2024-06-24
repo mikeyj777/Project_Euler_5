@@ -195,16 +195,20 @@ def get_prime_factors_as_dict_with_values_as_count_of_each_factor(v):
     
     return prime_factors
 
-def recurse_checker(v, check, prime_factors_of_each_number):
+def recurse_checker(v, check, prime_factors_of_each_number, found_primes = set()):
     v_orig = v
     if check not in prime_factors_of_each_number:
         prime_factors_of_each_number = recursive_prime_factoring_to_dict(check, prime_factors_of_each_number)
+        check_is_prime = True
         for k, _ in prime_factors_of_each_number[check].items():
             if k != check:
-                return {
-                    'v': v,
-                    'prime_factors_of_each_number': prime_factors_of_each_number
-                }
+                check_is_prime = False
+        if not check_is_prime:
+            return {
+                'v': v,
+                'prime_factors_of_each_number': prime_factors_of_each_number
+            }
+        found_primes.add(check)
     if check not in prime_factors_of_each_number[v_orig]:
         if len(prime_factors_of_each_number[check]) == 1:
             if v % check == 0:
@@ -222,7 +226,8 @@ def recurse_checker(v, check, prime_factors_of_each_number):
         
     return {
         'v': v,
-        'prime_factors_of_each_number': prime_factors_of_each_number
+        'prime_factors_of_each_number': prime_factors_of_each_number,
+        'found_primes': found_primes
     }
 
 def recursive_prime_factoring_to_dict(v, prime_factors_of_each_number = {}):
@@ -288,3 +293,39 @@ def recursive_prime_factoring_to_dict(v, prime_factors_of_each_number = {}):
 
 
     return prime_factors_of_each_number
+
+def test_primes_up_to_n(n, primes_so_far = {}):
+
+    primes_arr = np.array(list(primes_so_far.keys()))
+    test_for_existing_prime_factors = n % primes_arr
+    if 0 not in test_for_existing_prime_factors:
+        if is_prime(n):
+            primes_so_far[n] = None
+    
+    return primes_so_far
+
+def get_nth_prime(n):
+
+    primes = {}
+    primes[2] = None
+    primes[3] = None
+
+    k = 0
+    primes_display_step = 1000
+    primes_display_cutoff = primes_display_step
+    while len(primes) < n:
+        k += 1
+        l = 6*k - 1
+        u = 6*k + 1
+        primes = test_primes_up_to_n(l, primes_so_far=primes)
+        if len(primes) == n:
+            break
+        primes = test_primes_up_to_n(u, primes_so_far=primes)
+        
+        if len(primes) > primes_display_cutoff:
+            largest_prime = max(primes.keys())
+            pi = largest_prime / math.log(largest_prime)
+            print(f'{len(primes)} found.  {n - len(primes)} to go. largest prime {max(primes.keys())}.  pi accuracy {(pi-len(primes))/len(primes)}')
+            primes_display_cutoff += primes_display_step
+
+    return max(primes.keys())

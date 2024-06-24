@@ -6,6 +6,10 @@
 import numpy as np
 import helpers
 
+# the smallest number that is evenly divisible by all numbers from 1 to 20 
+# will have the prime factors of every other number.  they don't need to be duplicated 
+# bc the answer is only divided by one number bet 1 and 20 at a time. 
+
 all_the_factors = {}
 for i in range(2,21):
     prime_factors = helpers.get_prime_factors_as_dict_with_values_as_count_of_each_factor(i)
