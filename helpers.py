@@ -15,38 +15,6 @@ def get_starting_matrix_for_prime_testing(num):
 
     return arr
 
-def primes_below(num, use_prime_array_for_large_numbers = True, prime_arr = []):
-    if num <= 1:
-        return
-    if num == 2:
-        return [2]
-    max_prime = int(math.sqrt(num))
-    primes = [2, 3]
-    if num < 5:
-        return primes
-
-    # takes about 9 sec to load primes from csv.  no sense in loading from csv for singular test.
-    if len(prime_arr) == 0: 
-        if num >= 1e7 and num <= 1e9:
-            if use_prime_array_for_large_numbers:
-                prime_arr = get_primes_up_to_1e9()
-
-    if len(prime_arr) > 0:
-        prime_arr = np.array(prime_arr)
-        prime_arr = prime_arr[prime_arr <= num]
-        return prime_arr
-
-    arr = get_starting_matrix_for_prime_testing(num)
-
-    while arr[0] < max_prime:
-        primes.append(arr[0])
-        arr = arr[arr % arr[0] != 0]
-    
-    primes.extend(arr)
-    
-    return primes
-
-
 def is_prime(num, use_prime_array_for_large_numbers = True, prime_arr = []):
     
     if num < 2:
@@ -299,9 +267,8 @@ def test_primes_up_to_n(n, primes_so_far = {}):
     primes_arr = np.array(list(primes_so_far.keys()))
     test_for_existing_prime_factors = n % primes_arr
     if 0 not in test_for_existing_prime_factors:
-        if is_prime(n):
-            primes_so_far[n] = None
-    
+        primes_so_far[n] = None
+        
     return primes_so_far
 
 def get_nth_prime(n):
@@ -322,10 +289,81 @@ def get_nth_prime(n):
             break
         primes = test_primes_up_to_n(u, primes_so_far=primes)
         
-        if len(primes) > primes_display_cutoff:
-            largest_prime = max(primes.keys())
-            pi = largest_prime / math.log(largest_prime)
-            print(f'{len(primes)} found.  {n - len(primes)} to go. largest prime {max(primes.keys())}.  pi accuracy {(pi-len(primes))/len(primes)}')
-            primes_display_cutoff += primes_display_step
+        # if len(primes) > primes_display_cutoff:
+        #     largest_prime = max(primes.keys())
+        #     pi = largest_prime / math.log(largest_prime)
+        #     print(f'{len(primes)} found.  {n - len(primes)} to go. largest prime {max(primes.keys())}.  pi accuracy {(pi-len(primes))/len(primes)}')
+        #     primes_display_cutoff += primes_display_step
 
     return max(primes.keys())
+
+def get_primes_up_to_n(n):
+
+    if n < 2:
+        return []
+    
+    if n == 2:
+        return [2]
+    
+    if n < 5:
+        return [2, 3]
+
+    primes = {}
+    primes[2] = None
+    primes[3] = None
+
+    k = 0
+    primes_display_step = 1000
+    primes_display_cutoff = primes_display_step
+    largest_prime = 3
+    while largest_prime < n:
+        k += 1
+        l = 6*k - 1
+        u = 6*k + 1
+        primes = test_primes_up_to_n(l, primes_so_far=primes)
+        largest_prime = max(primes.keys())
+        if largest_prime == n:
+            break
+        primes = test_primes_up_to_n(u, primes_so_far=primes)
+        
+        largest_prime = max(primes.keys())
+        if len(primes) > primes_display_cutoff:
+            
+            pi = largest_prime / math.log(largest_prime)
+            print(f'{len(primes)} found.  {n - len(primes)} to go. largest prime {largest_prime}.  pi accuracy {(pi-len(primes))/len(primes)}')
+            primes_display_cutoff += primes_display_step
+
+    return list(primes.keys())
+
+def primes_up_to_n_from_full_array(num, use_prime_array_for_large_numbers = True, prime_arr = []):
+    if num <= 1:
+        return
+    if num == 2:
+        return [2]
+    max_prime = int(math.sqrt(num))
+    primes = [2, 3]
+    if num < 5:
+        return primes
+
+    # takes about 9 sec to load primes from csv.  no sense in loading from csv for singular test.
+    if len(prime_arr) == 0: 
+        if num >= 1e7 and num <= 1e9:
+            if use_prime_array_for_large_numbers:
+                prime_arr = get_primes_up_to_1e9()
+
+    if len(prime_arr) > 0:
+        prime_arr = np.array(prime_arr)
+        prime_arr = prime_arr[prime_arr <= num]
+        return prime_arr
+
+    arr = get_starting_matrix_for_prime_testing(num)
+
+    while arr[0] < max_prime:
+        primes.append(arr[0])
+        arr = arr[arr % arr[0] != 0]
+    
+    primes.extend(arr)
+    
+    return primes
+
+
