@@ -27,30 +27,53 @@ max_prod = -1
 
 for i in range(arr.shape[0]):
     for j in range(arr.shape[1]):
-        ending_row_ud = min(arr.shape[0], 1 + 4)
+
+        if i == 6 and j == 8:
+            apple = 1
+
+        ending_row_ud = min(arr.shape[0], i + 4)
         ending_col_lr = min(arr.shape[1], j + 4)
-        starting_row_lr = max(0, i - 3)
-        starting_col_ud = max(0, j - 3)
+        
+        starting_row_du = max(0, i - 3)
+        starting_col_rl = max(0, j - 3)
 
-        ending_row_rl = max(0, i - 3)
-        starting_row_rl = min()
+        ending_row = min(i+1, arr.shape[0]-1)
+        ending_col = min(j+1, arr.shape[1] - 1)
 
-        # left to right
-        prod_lr = np.prod(arr[i][j:ending_col_lr])
+        # to right
+        prod_lr = np.prod(arr[i, j:ending_col_lr])
 
-        # right to left
-        prod_rl = np.prod(arr[starting_row:i+1][j])
+        # to left
+        prod_rl = np.prod(arr[i, starting_col_rl:ending_col])
 
-        # up down
-        prod_ud = np.prod(arr[i:ending_row][j])
+        # down
+        prod_ud = np.prod(arr[i:ending_row_ud, j])
 
-        # down up
-        prod_ud = np.prod(arr[i][starting_col:j+1])
+        # up
+        prod_du = np.prod(arr[starting_row_du:ending_row, j])
 
         # diagonals
 
-        box = arr[i:ending_row][j:ending_col]
+        # to lower right
+        box = arr[i:ending_row_ud, j:ending_col_lr]
+        prod_diag_to_lr = np.prod(np.diag(box))
 
-        #diag left to right
+        # to upper left
+        box = arr[starting_row_du:ending_row, starting_col_rl:ending_col]
+        prod_diag_to_ul = np.prod(np.diag(box))
+
+        # to lower left
+        box = arr[i:ending_row_ud, starting_col_rl:ending_col]
+        prod_diag_to_ll = np.prod(np.diag(np.rot90(box)))
+
+        # to upper right
+        box = arr[starting_row_du:ending_row, j:ending_col_lr]
+        prod_diag_to_ur = np.prod(np.diag(np.rot90(box)))
+
+        max_prod = max(max_prod, prod_lr, prod_rl, prod_ud, prod_du, prod_diag_to_lr, 
+                       prod_diag_to_ul, prod_diag_to_ll, prod_diag_to_ur)
         
-        prod_diag_lr = []
+
+print(max_prod)
+
+# 70600674
