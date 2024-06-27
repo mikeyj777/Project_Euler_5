@@ -97,6 +97,12 @@ def reduce_v_if_check_is_prime(v, check, prime_factors, composite_factors, large
 
 def get_prime_factors_as_dict_with_values_as_count_of_each_factor(v):
 
+    if v is None:
+        return {}
+
+    if v <= 1:
+        return {1: 1}
+
     prime_factors = {}
     composite_factors = {}
     large_array_of_primes = []
